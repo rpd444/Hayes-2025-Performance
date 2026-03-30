@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kevin Hayes — 2025 Annual Performance Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2230;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #d2a8ff;
+    --accent4: #f0883e;
+    --danger: #f85149;
+    --gold: #d4a853;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .report {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .header-sub {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .header .year {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .header .firm {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gold);
+    display: inline-block;
+  }
+
+  .section { margin-bottom: 56px; }
+
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .kpi:hover { transform: translateY(-2px); }
+
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .kpi-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .kpi-value.blue { color: var(--accent); }
+  .kpi-value.green { color: var(--accent2); }
+  .kpi-value.purple { color: var(--accent3); }
+  .kpi-value.orange { color: var(--accent4); }
+  .kpi-value.gold { color: var(--gold); }
+  .kpi-value.red { color: var(--danger); }
+
+  /* CHART CONTAINERS */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+
+  .chart-card.full { grid-column: 1 / -1; }
+
+  .chart-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .chart-wrap canvas {
+    width: 100% !important;
+  }
+
+  /* DATA TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 12px 14px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  thead th:first-child { text-align: left; }
+
+  tbody td {
+    padding: 10px 14px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  tbody tr:hover { background: var(--surface2); }
+
+  tfoot td {
+    padding: 12px 14px;
+    text-align: right;
+    font-weight: 700;
+    border-top: 2px solid var(--gold);
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  tfoot td:first-child { text-align: left; color: var(--gold); }
+
+  /* TARGET GAUGE */
+  .gauge-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 32px 0;
+  }
+
+  .gauge-wrap {
+    width: 220px;
+    height: 220px;
+    position: relative;
+  }
+
+  .gauge-text {
+    max-width: 360px;
+  }
+
+  .gauge-text h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .gauge-text p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .quote {
+    margin-top: 40px;
+    padding: 24px 32px;
+    border-left: 3px solid var(--gold);
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .quote cite {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 13px;
+  }
+
+  @media (max-width: 768px) {
+    .chart-row { grid-template-columns: 1fr; }
+    .header h1 { font-size: 32px; }
+    .gauge-section { flex-direction: column; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="report">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-sub">Attorney Performance Report</div>
+    <h1>Kevin Hayes</h1>
+    <div class="year">2025 Annual Review</div>
+    <div class="firm">DFPB</div>
+  </div>
+
+  <!-- ANNUAL SUMMARY KPIs -->
+  <div class="section">
+    <div class="section-title">Annual Summary</div>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Total Tracked</div>
+        <div class="kpi-value blue">1,476.8</div>
+        <div class="kpi-sub">hours logged</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Billable Hours</div>
+        <div class="kpi-value green">1,142.7</div>
+        <div class="kpi-sub">of 1,440 target (79.4%)</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Billable Value</div>
+        <div class="kpi-value purple">$416,418</div>
+        <div class="kpi-sub">generated</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Billed Value</div>
+        <div class="kpi-value orange">$394,441</div>
+        <div class="kpi-sub">invoiced to clients</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Collected Value</div>
+        <div class="kpi-value gold">$393,051</div>
+        <div class="kpi-sub">revenue received</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Avg Daily Tracked</div>
+        <div class="kpi-value blue">5.84</div>
+        <div class="kpi-sub">hrs / day (253 days)</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Realization Rate</div>
+        <div class="kpi-value green">94.7%</div>
+        <div class="kpi-sub">billed ÷ billable</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Collection Rate</div>
+        <div class="kpi-value gold">99.6%</div>
+        <div class="kpi-sub">collected ÷ billed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BILLABLE TARGET GAUGE -->
+  <div class="section">
+    <div class="section-title">Billable Hour Target</div>
+    <div class="chart-card full">
+      <div class="gauge-section">
+        <div class="gauge-wrap">
+          <canvas id="gaugeChart"></canvas>
+        </div>
+        <div class="gauge-text">
+          <h4>1,142.7 of 1,440 Hours</h4>
+          <p>Kevin tracked 1,142.7 billable hours against the firm's 1,440-hour annual target, landing at 79.4%. He fell 297.3 hours short of the benchmark. His daily billable average came in at 4.52 hours against the 6.0 target. The strongest months were October (127.5 hrs) and May (111.6 hrs), while August (69.7 hrs) and June (61.7 hrs) were the lightest.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTHLY HOURS CHARTS -->
+  <div class="section">
+    <div class="section-title">Monthly Hours Breakdown</div>
+    <div class="chart-row">
+      <div class="chart-card full">
+        <h3>Tracked vs. Billable vs. Billed Hours by Month</h3>
+        <div class="chart-wrap"><canvas id="monthlyHoursChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Daily Average Tracked Hours</h3>
+        <div class="chart-wrap"><canvas id="dailyAvgChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Billable vs. Non-Billable Split</h3>
+        <div class="chart-wrap"><canvas id="billableSplitChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE / REVENUE CHARTS -->
+  <div class="section">
+    <div class="section-title">Revenue Pipeline</div>
+    <div class="chart-row">
+      <div class="chart-card full">
+        <h3>Monthly Value: Billable → Billed → Collected</h3>
+        <div class="chart-wrap"><canvas id="monthlyValueChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Quarterly Revenue Collected</h3>
+        <div class="chart-wrap"><canvas id="quarterlyChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Cumulative Collected Value</h3>
+        <div class="chart-wrap"><canvas id="cumulativeChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="section">
+    <div class="section-title">Quarterly Detail</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Quarter</th><th>Days</th><th>Tracked Hrs</th><th>Billable Hrs</th>
+            <th>Billable $</th><th>Billed Hrs</th><th>Billed $</th>
+            <th>Collected Hrs</th><th>Collected $</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Q1</td><td>66</td><td>408.3</td><td>284.9</td><td>$103,680</td><td>263.1</td><td>$95,723</td><td>262.3</td><td>$95,430</td></tr>
+          <tr><td>Q2</td><td>59</td><td>377.9</td><td>279.6</td><td>$101,744</td><td>274.2</td><td>$99,788</td><td>273.8</td><td>$99,630</td></tr>
+          <tr><td>Q3</td><td>62</td><td>326.8</td><td>258.0</td><td>$94,122</td><td>245.1</td><td>$89,429</td><td>246.1</td><td>$89,429</td></tr>
+          <tr><td>Q4</td><td>66</td><td>363.8</td><td>320.2</td><td>$116,873</td><td>300.8</td><td>$109,502</td><td>306.7</td><td>$108,561</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td>TOTAL</td><td>253</td><td>1,476.8</td><td>1,142.7</td><td>$416,418</td><td>1,083.2</td><td>$394,441</td><td>1,088.9</td><td>$393,051</td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- MONTHLY TABLE -->
+  <div class="section">
+    <div class="section-title">Monthly Detail</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th><th>Days</th><th>Tracked</th><th>Billable Hrs</th><th>Non-Bill Hrs</th>
+            <th>Billable $</th><th>Billed $</th><th>Collected $</th><th>Avg/Day</th>
+          </tr>
+        </thead>
+        <tbody id="monthlyTableBody"></tbody>
+        <tfoot>
+          <tr>
+            <td>TOTAL</td><td>253</td><td>1,476.8</td><td>1,142.7</td><td>334.1</td>
+            <td>$416,418</td><td>$394,441</td><td>$393,051</td><td>5.84</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="quote">
+    "Do what you can, with what you have, where you are."
+    <cite>— Theodore Roosevelt</cite>
+  </div>
+
+</div>
+
+<script>
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const data = {
+  tracked: [137.1,131.9,139.3,144.3,149.4,84.2,110.8,89.4,126.6,148.0,100.9,114.9],
+  billable: [86.6,92.3,106.0,106.3,111.6,61.7,86.7,69.7,101.6,127.5,87.8,104.9],
+  nonbillable: [50.5,39.6,33.3,38.0,37.8,22.5,24.1,19.7,25.0,20.5,13.1,10.0],
+  billed_hrs: [83.2,82.7,97.2,105.3,111.6,57.3,85.5,66.9,92.7,124.0,86.2,90.6],
+  billable_val: [31554,33517,38609,38621,40664,22459,31598,25441,37084,46538,32047,38289],
+  billed_val: [30313,30013,35397,38271,40664,20853,31169,24419,33842,45260,31463,32779],
+  collected_val: [30313,30013,35104,38114,40664,20853,31168,24419,33843,45260,31463,31838],
+  avg_daily: [5.96,6.59,6.06,6.56,6.50,6.01,5.04,4.71,6.03,6.17,5.31,5.00],
+  days: [23,20,23,22,23,14,22,19,21,24,19,23]
+};
+
+// Defaults
+Chart.defaults.color = '#8b949e';
+Chart.defaults.borderColor = '#30363d';
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+
+// Gauge
+new Chart(document.getElementById('gaugeChart'), {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [1142.7, 297.3],
+      backgroundColor: ['#3fb950','#30363d'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    cutout: '75%',
+    rotation: -90,
+    circumference: 180,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false }
+    }
+  },
+  plugins: [{
+    id: 'gaugeText',
+    afterDraw(chart) {
+      const {ctx, chartArea:{left,right,top,bottom}} = chart;
+      const cx = (left+right)/2, cy = bottom - 10;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#3fb950';
+      ctx.font = "bold 36px 'Playfair Display', serif";
+      ctx.fillText('79.4%', cx, cy - 16);
+      ctx.fillStyle = '#8b949e';
+      ctx.font = "13px 'Source Sans 3', sans-serif";
+      ctx.fillText('of 1,440 target', cx, cy + 8);
+      ctx.restore();
+    }
+  }]
+});
+
+// Monthly Hours (grouped bar)
+new Chart(document.getElementById('monthlyHoursChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Tracked', data: data.tracked, backgroundColor: '#58a6ff', borderRadius: 4 },
+      { label: 'Billable', data: data.billable, backgroundColor: '#3fb950', borderRadius: 4 },
+      { label: 'Billed', data: data.billed_hrs, backgroundColor: '#d2a8ff', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Hours' } }
+    }
+  }
+});
+
+// Daily Avg
+new Chart(document.getElementById('dailyAvgChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Avg Daily Hours',
+        data: data.avg_daily,
+        borderColor: '#58a6ff',
+        backgroundColor: 'rgba(88,166,255,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#58a6ff',
+        pointRadius: 5
+      },
+      {
+        label: '6.0 Target',
+        data: Array(12).fill(6.0),
+        borderColor: '#f85149',
+        borderDash: [6,4],
+        pointRadius: 0,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { min: 3, max: 8, title: { display: true, text: 'Hours/Day' } } }
+  }
+});
+
+// Billable vs Non-Billable (stacked)
+new Chart(document.getElementById('billableSplitChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Billable', data: data.billable, backgroundColor: '#3fb950', borderRadius: 4 },
+      { label: 'Non-Billable', data: data.nonbillable, backgroundColor: '#f85149', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      x: { stacked: true },
+      y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Hours' } }
+    }
+  }
+});
+
+// Monthly Value
+new Chart(document.getElementById('monthlyValueChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Billable $', data: data.billable_val, backgroundColor: '#d2a8ff', borderRadius: 4 },
+      { label: 'Billed $', data: data.billed_val, backgroundColor: '#f0883e', borderRadius: 4 },
+      { label: 'Collected $', data: data.collected_val, backgroundColor: '#d4a853', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': $' + ctx.raw.toLocaleString()
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '$' + (v/1000) + 'k' },
+        title: { display: true, text: 'Value ($)' }
+      }
+    }
+  }
+});
+
+// Quarterly Bar
+new Chart(document.getElementById('quarterlyChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Q1','Q2','Q3','Q4'],
+    datasets: [{
+      label: 'Collected $',
+      data: [95430, 99630, 89429, 108561],
+      backgroundColor: ['#58a6ff','#3fb950','#d2a8ff','#d4a853'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => '$' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '$' + (v/1000) + 'k' }
+      }
+    }
+  }
+});
+
+// Cumulative Line
+const cumulative = [];
+let running = 0;
+data.collected_val.forEach(v => { running += v; cumulative.push(running); });
+
+new Chart(document.getElementById('cumulativeChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'Cumulative Collected',
+      data: cumulative,
+      borderColor: '#d4a853',
+      backgroundColor: 'rgba(212,168,83,0.1)',
+      fill: true,
+      tension: 0.3,
+      pointBackgroundColor: '#d4a853',
+      pointRadius: 5
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => '$' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '$' + (v/1000) + 'k' }
+      }
+    }
+  }
+});
+
+// Monthly Table
+const tbody = document.getElementById('monthlyTableBody');
+const fmt = n => n.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+for (let i = 0; i < 12; i++) {
+  tbody.innerHTML += `<tr>
+    <td>${months[i]}</td><td>${data.days[i]}</td>
+    <td>${data.tracked[i].toFixed(1)}</td><td>${data.billable[i].toFixed(1)}</td>
+    <td>${data.nonbillable[i].toFixed(1)}</td>
+    <td>$${fmt(data.billable_val[i])}</td><td>$${fmt(data.billed_val[i])}</td>
+    <td>$${fmt(data.collected_val[i])}</td><td>${data.avg_daily[i].toFixed(2)}</td>
+  </tr>`;
+}
+</script>
+</body>
+</html>
